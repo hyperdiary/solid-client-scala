@@ -6,3 +6,12 @@ curl -X DELETE http://localhost:3000/test7.ttl
 curl -X DELETE http://localhost:3000/test8.ttl
 curl -X DELETE http://localhost:3000/foo/
 curl -X DELETE http://localhost:3000/inbox/
+curl -X DELETE http://krw.localhost:3000/journal/
+curl -X DELETE http://krw.localhost:3000/entry/
+curl -X DELETE http://krw.localhost:3000/label/
+curl -X DELETE http://krw.localhost:3000/person/41cf17c4-292d-4d85-b2cf-5513c005d424
+curl -X DELETE http://krw.localhost:3000/person/
+curl -X DELETE http://krw.localhost:3000/place/
+curl -X DELETE http://krw.localhost:3000/residence/
+curl -X DELETE http://krw.localhost:3000/thing/
+curl -X DELETE http://krw.localhost:3000/photo/

@@ -1,4 +1,4 @@
-package org.hyperdiary
+package org.hyperdiary.solid.client
 
 import sttp.client3.*
 import sttp.client3.okhttp.OkHttpSyncBackend
