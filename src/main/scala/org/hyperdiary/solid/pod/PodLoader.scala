@@ -3,7 +3,7 @@ package org.hyperdiary.solid.pod
 import org.hyperdiary.solid.client.SolidClient
 import org.hyperdiary.solid.model.Label
 import sttp.client3.UriContext
-import sttp.model.MediaType
+import sttp.model.{MediaType, Uri}
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try, Using}
@@ -31,23 +31,31 @@ class PodLoader(podUrl: String) {
     }
   }
   
-  def getLabels(labelPath: String): List[Label] = {
-    readLabelFile(labelPath) match {
+  def readLabelsCsv(labelCsvPath: String): List[Label] = {
+    readLines(labelCsvPath) match {
       case Success(lines) =>
         lines.map { line =>
-          val cols = line.split(";").map(_.trim)
+          val cols: Array[String] = line.split("\\|").map(_.trim)
           Label(cols.head, cols(1))
         }
       case Failure(e) =>
         println(s"Failed to read file due to ${e.getMessage}")
         List.empty
     }
-    
+  }
+
+  def insertAsSparqlUpdate(resourceUri: Uri, resourceBody: String): Unit = {
+    val sparqlInsert = s"INSERT DATA { $resourceBody }"
+    val response = client.patchResource(resourceUri,sparqlInsert, MediaType("application","sparql-update"))
+    response.body match {
+      case Left(body) => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
+      case Right(body) => println(s"2xx response to GET:\n$body")
+    }
   }
 
   // 4) read labels from CSV file
-  private def readLabelFile(labelPath: String): Try[List[String]] = {
-    Using(Source.fromFile(labelPath)) { bufferedSource =>
+  private def readLines(labelCsvPath: String): Try[List[String]] = {
+    Using(Source.fromFile(labelCsvPath)) { bufferedSource =>
       (for (line <- bufferedSource.getLines()) yield line).toList
     }
   }

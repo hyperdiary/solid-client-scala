@@ -11,6 +11,7 @@ lazy val root = project
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client3" %% "core" % "3.9.2",
       "org.apache.jena" % "jena-core" % "4.10.0",
+      "org.apache.jena" % "jena-arq" % "4.10.0",
       "com.softwaremill.sttp.client3" %% "okhttp-backend" % "3.9.2",
       "org.scalameta" %% "munit" % "0.7.29" % Test
     )
