@@ -61,12 +61,29 @@ class PodLoader(podUrl: String) {
       load(resource)
     }
   }
+  
+  def loadTurtleHashFile(turtlePath: String, collectionName: String, localName: String) = {
+    val model = RDFDataMgr.loadModel(turtlePath)
+    val response = client.putResource(uri"$podUrl/$collectionName/$localName", modelAsString(model), MediaType("text", "turtle"))
+    response.body match {
+      case Left(body) => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
+      case Right(body) => println(s"2xx response to GET:\n$body")
+    }
+
+  }
 
   def load(resource: Resource): Unit = {
-    val uri = resource.getURI.substring(podUrl.length - 1).split("/")
     val resourceModel = resource.listProperties().toModel
-    val response =
-      client.putResource(uri"$podUrl/${uri(0)}/${uri(1)}", modelAsString(resourceModel), MediaType("text", "turtle"))
+    val uri = resource.getURI.substring(podUrl.length - 1).split("/")
+    val collection = uri(0)
+    val localName = uri(1)
+    val response = if(localName.contains('#')) {
+      val hashUri = localName.split("#")
+      client.putResource(uri"$podUrl/$collection/${hashUri(0)}#${hashUri(1)}", modelAsString(resourceModel), MediaType("text", "turtle"))
+    } else {
+      client.putResource(uri"$podUrl/$collection/$localName", modelAsString(resourceModel), MediaType("text", "turtle"))
+
+    }
     response.body match {
       case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
       case Right(body) => println(s"2xx response to GET:\n$body")
