@@ -3,6 +3,7 @@ val scala3Version = "3.3.1"
 lazy val root = project
   .in(file("."))
   .settings(
+    organization := "org.hyperdiary",
     name := "solid-client-scala",
     version := "0.1.0-SNAPSHOT",
 
