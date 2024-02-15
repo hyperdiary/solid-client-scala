@@ -7,7 +7,3 @@ curl -v -X PUT -H 'Link: <http://www.w3.org/ns/ldp#Container>; rel="type"' http:
 curl -v -X PUT -H 'Link: <http://www.w3.org/ns/ldp#Container>; rel="type"' http://krw.localhost:3000/residence/
 curl -v -X PUT -H 'Link: <http://www.w3.org/ns/ldp#Container>; rel="type"' http://krw.localhost:3000/thing/
 curl -v -X PUT -H 'Link: <http://www.w3.org/ns/ldp#Container>; rel="type"' http://krw.localhost:3000/photo/
-
-
-
-
