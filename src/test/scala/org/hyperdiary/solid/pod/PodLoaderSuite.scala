@@ -12,7 +12,7 @@ class PodLoaderSuite extends munit.FunSuite {
 
   test("test") {
     val loader = new PodLoader("http://krw.localhost:3000/")
-    //loader.createContainers(List("journal","entry","label","person","place","residence","thing","photo"))
+    loader.createContainers(List("journal","entry","label","person","place","residence","thing","photo"))
 //    for {
 //      resource <- loader.generateResource("label")
 //    } yield println(resource)
@@ -37,8 +37,10 @@ class PodLoaderSuite extends munit.FunSuite {
   test("test3") {
     val hostname = "http://krw.localhost:3000/"
     val loader = new PodLoader(hostname)
-    val entriesFilePath = getClass.getResource("/test-entry.ttl").getPath
-    loader.loadTurtleHashFile(entriesFilePath,"entry","J1.E1")
+    for(i <- 2 to 17) {
+      val entriesFilePath = getClass.getResource(s"/J1.E$i.ttl").getPath
+      loader.loadTurtleHashFile(entriesFilePath, "entry", s"J1.E$i")
+    }
 //    val entriesFilePath = getClass.getResource("/krw-entries.ttl").getPath
 //    loader.loadTurtleFile(entriesFilePath)
 //    val journalsFilePath = getClass.getResource("/krw-journals.ttl").getPath
@@ -56,13 +58,16 @@ class PodLoaderSuite extends munit.FunSuite {
   }
 
   test("test4") {
+    for(i <- 1 to 17) {
+      val entriesFilePath = s"/home/rkw/Source/GitHub/hyperdiary/journal-xml/target/J1.E$i.xml"
+      val model = RDFDataMgr.loadModel(entriesFilePath)
+      val out = new PrintWriter(new File(s"/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/krw/J1.E$i.ttl"))
+      RDFDataMgr.write(out, model.listStatements().toModel, Lang.TTL)
+      out.close()
+      assertEquals(true, true)
+    }
     //val entriesFilePath = getClass.getResource("/J1.E17.xml").getPath
-    val entriesFilePath = "/home/rkw/Source/GitHub/hyperdiary/journal-xml/target/J1.E1.xml"
-    val model = RDFDataMgr.loadModel(entriesFilePath)
-    val out = new PrintWriter(new File("/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/krw/J1.E1.ttl"))
-    RDFDataMgr.write(out, model.listStatements().toModel, Lang.TTL)
-    out.close()
-    assertEquals(true, true)
+
 
   }
 
