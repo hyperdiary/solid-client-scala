@@ -15,7 +15,7 @@ lazy val root = project
       "org.apache.jena" % "jena-arq" % "4.10.0",
       "com.softwaremill.sttp.client3" %% "okhttp-backend" % "3.9.2",
       "com.softwaremill.sttp.client3" %% "circe" % "3.9.2",
-      "com.github.pureconfig" %% "pureconfig" % "0.17.6",
+      "com.github.pureconfig" %% "pureconfig-core" % "0.17.6",
       "io.circe" %% "circe-core" % "0.14.5",
       "io.circe" %% "circe-generic" % "0.14.5",
       "io.circe" %% "circe-parser" % "0.14.5",
