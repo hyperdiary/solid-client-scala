@@ -36,16 +36,17 @@ class PodLoaderSuite extends munit.FunSuite {
 
   test("test3") {
     val hostname = "http://krw.localhost:3000/"
+    val fileRoot = "/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/krw"
     val loader = new PodLoader(hostname)
-    for(i <- 2 to 17) {
-      val entriesFilePath = getClass.getResource(s"/J1.E$i.ttl").getPath
+    for(i <- 1 to 17) {
+      val entriesFilePath = File(s"$fileRoot/J1.E$i.ttl").getPath
       loader.loadTurtleHashFile(entriesFilePath, "entry", s"J1.E$i")
     }
 //    val entriesFilePath = getClass.getResource("/krw-entries.ttl").getPath
 //    loader.loadTurtleFile(entriesFilePath)
-//    val journalsFilePath = getClass.getResource("/krw-journals.ttl").getPath
+//    val journalsFilePath = File(s"$fileRoot/J1.ttl").getPath
 //    loader.loadTurtleFile(journalsFilePath)
-//    val labelsFilePath = getClass.getResource("/krw-labels.ttl").getPath
+//    val labelsFilePath = File(s"$fileRoot/krw-labels.ttl").getPath
 //    loader.loadTurtleFile(labelsFilePath)
 //    val peopleFilePath = getClass.getResource("/krw-people.ttl").getPath
 //    loader.loadTurtleFile(peopleFilePath)
