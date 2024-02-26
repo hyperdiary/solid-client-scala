@@ -3,6 +3,6 @@ import java.security.KeyPair
 
 class DefaultDpopService extends DpopService {
 
-  override def ofKeyPairs(keypairs: Map[String, KeyPair]): DPoP = new DPoPManager(keypairs)
+  override def ofKeyPairs(keypairs: Map[String, KeyPair]): Dpop = DpopManager(keypairs)
 
 }
