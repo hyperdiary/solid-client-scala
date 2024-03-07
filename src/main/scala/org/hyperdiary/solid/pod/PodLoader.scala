@@ -1,20 +1,21 @@
 package org.hyperdiary.solid.pod
 
-import org.apache.jena.rdf.model.{ Model, Resource }
-import org.apache.jena.riot.{ Lang, RDFDataMgr }
+import org.apache.jena.rdf.model.{Model, Resource}
+import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.hyperdiary.solid.client.SolidClient
+import org.hyperdiary.solid.dpop.DpopManager
 import org.hyperdiary.solid.model.Label
 import sttp.client3.UriContext
-import sttp.model.{ MediaType, Uri }
+import sttp.model.{MediaType, Uri}
 
 import java.io.StringWriter
 import scala.io.Source
 import scala.jdk.CollectionConverters.*
-import scala.util.{ Failure, Success, Try, Using }
+import scala.util.{Failure, Success, Try, Using}
 
 class PodLoader(podUrl: String) {
 
-  private val client = new SolidClient()
+  private val client = new SolidClient(DpopManager())
 
   // 1) create a container e.g. label/
   def createContainers(containerNames: List[String]): Unit =

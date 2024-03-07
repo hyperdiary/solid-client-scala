@@ -1,12 +1,13 @@
 package org.hyperdiary.solid.client
 
+import org.hyperdiary.solid.dpop.{Dpop, DpopManager}
 import sttp.client3.UriContext
 import sttp.model.{MediaType, StatusCode}
 
 class SolidClientSuite extends munit.FunSuite {
 
   private val hostname = "http://localhost:3000"
-  private val client = new SolidClient()
+  private val client = new SolidClient(DpopManager())
   private val textBody = "abc"
   private val turtleBody = "<ex:s> <ex:p> <ex:o>."
   private val jsonLdBody =

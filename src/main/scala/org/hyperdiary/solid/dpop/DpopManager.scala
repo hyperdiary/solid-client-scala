@@ -14,6 +14,7 @@ import scala.util.{ Failure, Try }
 
 class DpopManager(keypairs: Map[String, KeyPair], thumbprints: Map[String, String]) extends Dpop {
 
+  
   override def generateProof(algorithm: String, uri: URI, method: String): Try[String] =
     keypairs.get(algorithm) match {
       case Some(keypair) =>

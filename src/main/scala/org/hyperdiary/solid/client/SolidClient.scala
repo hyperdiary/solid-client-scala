@@ -1,10 +1,11 @@
 package org.hyperdiary.solid.client
 
+import org.hyperdiary.solid.dpop.DpopManager
 import sttp.client3.*
 import sttp.client3.okhttp.OkHttpSyncBackend
-import sttp.model.{ Header, MediaType, Uri }
+import sttp.model.{Header, MediaType, Uri}
 
-class SolidClient {
+class SolidClient(dpopManager: DpopManager) {
 
   private val backend = OkHttpSyncBackend()
 
@@ -91,6 +92,18 @@ class SolidClient {
       .get(resourceUri)
       .header(Header.accept(acceptType))
       .send(backend)
+
+  def getResourceWithAuthorization(
+    resourceUri: Uri,
+    acceptType: String,
+    authToken: String,
+  ): Identity[Response[Either[String, String]]] = {
+    val dpopHeader = dpopManager.generateProof("ES256", resourceUri.toJavaUri,"GET").toOption.get
+    basicRequest
+      .get(resourceUri)
+      .headers(Header.accept(acceptType),Header("DPoP",dpopHeader),Header.authorization("DPoP",authToken))
+      .send(backend)
+  }
 
   /** Retrieves the headers for the given resource URI using HEAD
     *
