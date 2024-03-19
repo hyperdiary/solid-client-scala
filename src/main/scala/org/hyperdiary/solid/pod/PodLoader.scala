@@ -6,9 +6,11 @@ import org.hyperdiary.solid.client.SolidClient
 import org.hyperdiary.solid.dpop.DpopManager
 import org.hyperdiary.solid.model.Label
 import sttp.client3.UriContext
+import sttp.model.MediaType.ImageJpeg
 import sttp.model.{MediaType, Uri}
 
 import java.io.StringWriter
+import java.nio.file.Path
 import scala.io.Source
 import scala.jdk.CollectionConverters.*
 import scala.util.{Failure, Success, Try, Using}
@@ -63,14 +65,21 @@ class PodLoader(podUrl: String) {
     }
   }
   
-  def loadTurtleHashFile(turtlePath: String, collectionName: String, localName: String) = {
+  def loadTurtleHashFile(turtlePath: String, collectionName: String, localName: String): Unit = {
     val model = RDFDataMgr.loadModel(turtlePath)
     val response = client.putResource(uri"$podUrl/$collectionName/$localName", modelAsString(model), MediaType("text", "turtle"))
     response.body match {
       case Left(body) => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
       case Right(body) => println(s"2xx response to GET:\n$body")
     }
-
+  }
+  
+  def loadPhoto(photoPath: Path, collectionName: String, localName: String) = {
+    val response = client.putResource(uri"$podUrl/$collectionName/$localName", photoPath, ImageJpeg)
+    response.body match {
+      case Left(body) => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
+      case Right(body) => println(s"2xx response to GET:\n$body")
+    }
   }
 
   def load(resource: Resource): Unit = {

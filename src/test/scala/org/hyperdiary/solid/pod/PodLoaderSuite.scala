@@ -7,6 +7,7 @@ import sttp.model.Uri
 
 import scala.jdk.CollectionConverters.*
 import java.io.{File, PrintWriter, StringWriter}
+import java.nio.file.Path
 
 class PodLoaderSuite extends munit.FunSuite {
 
@@ -38,10 +39,10 @@ class PodLoaderSuite extends munit.FunSuite {
     val hostname = "http://krw.localhost:3000/"
     val fileRoot = "/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/krw"
     val loader = new PodLoader(hostname)
-    for(i <- 1 to 17) {
-      val entriesFilePath = File(s"$fileRoot/J1.E$i.ttl").getPath
-      loader.loadTurtleHashFile(entriesFilePath, "entry", s"J1.E$i")
-    }
+//    for(i <- 1 to 17) {
+//      val entriesFilePath = File(s"$fileRoot/J1.E$i.ttl").getPath
+//      loader.loadTurtleHashFile(entriesFilePath, "entry", s"J1.E$i")
+//    }
 //    val entriesFilePath = getClass.getResource("/krw-entries.ttl").getPath
 //    loader.loadTurtleFile(entriesFilePath)
 //    val journalsFilePath = File(s"$fileRoot/J1.ttl").getPath
@@ -56,6 +57,8 @@ class PodLoaderSuite extends munit.FunSuite {
 //    loader.loadTurtleFile(residencesFilePath)
 //    val thingsFilePath = getClass.getResource("/krw-things.ttl").getPath
 //    loader.loadTurtleFile(thingsFilePath)
+      val photosFilePath = File("/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/krw/krw-photos.ttl").getPath
+      loader.loadTurtleFile(photosFilePath)
   }
 
   test("test4") {
@@ -68,8 +71,15 @@ class PodLoaderSuite extends munit.FunSuite {
       assertEquals(true, true)
     }
     //val entriesFilePath = getClass.getResource("/J1.E17.xml").getPath
+  }
 
-
+  test("test5") {
+    val hostname = "http://krw.localhost:3000/"
+    val loader = new PodLoader(hostname)
+    for(i <- 3 to 15) {
+      val photoFilePath = Path.of(s"/home/rkw/Source/GitHub/hyperdiary/journal-rdf/images/krw/$i.jpg")
+      loader.loadPhoto(photoFilePath, "photo", s"$i.jpg")
+    }
   }
 
 }

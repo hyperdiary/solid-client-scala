@@ -5,6 +5,8 @@ import sttp.client3.*
 import sttp.client3.okhttp.OkHttpSyncBackend
 import sttp.model.{Header, MediaType, Uri}
 
+import java.nio.file.Path
+
 class SolidClient(dpopManager: DpopManager) {
 
   private val backend = OkHttpSyncBackend()
@@ -26,6 +28,12 @@ class SolidClient(dpopManager: DpopManager) {
     mediaType: MediaType
   ): Identity[Response[Either[String, String]]] =
     basicRequest.body(bodyText).contentType(mediaType.toString).put(resourceUri).send(backend)
+
+  def putResource(
+    resourceUri: Uri,
+    filePath: Path,
+    mediaType: MediaType): Identity[Response[Either[String, String]]] =
+      basicRequest.body(filePath).contentType(mediaType.toString).put(resourceUri).send(backend)
 
   /** Creates a Linked Data Platform Container using PUT
     * @param containerUri
