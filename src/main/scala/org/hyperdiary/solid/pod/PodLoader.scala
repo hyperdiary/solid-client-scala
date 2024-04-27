@@ -74,7 +74,7 @@ class PodLoader(podUrl: String) {
     }
   }
   
-  def loadPhoto(photoPath: Path, collectionName: String, localName: String) = {
+  def loadPhoto(photoPath: Path, collectionName: String, localName: String): Unit = {
     val response = client.putResource(uri"$podUrl/$collectionName/$localName", photoPath, ImageJpeg)
     response.body match {
       case Left(body) => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
@@ -82,7 +82,7 @@ class PodLoader(podUrl: String) {
     }
   }
 
-  def load(resource: Resource): Unit = {
+  private def load(resource: Resource): Unit = {
     val resourceModel = resource.listProperties().toModel
     val uri = resource.getURI.substring(podUrl.length - 1).split("/")
     val collection = uri(0)
