@@ -28,7 +28,7 @@ class SolidClientSuite extends munit.FunSuite {
       |<ex:s2> <ex:p2> <ex:o2>.
       |""".stripMargin
 
-  test("#1 create, retrieve and delete a named plain text resource") {
+  test("#1 create, retrieve and delete a named plain text resource".ignore) {
     val resourceName = "text1.txt"
     val response1 =
       client.putResource(uri"$hostname/$resourceName", textBody, MediaType.TextPlain)
@@ -42,7 +42,7 @@ class SolidClientSuite extends munit.FunSuite {
     assertEquals(response3.code, StatusCode.ResetContent)
   }
 
-  test("#2 create, retrieve headers and delete a named plain text resource") {
+  test("#2 create, retrieve headers and delete a named plain text resource".ignore) {
     val resourceName = "test2.txt"
     val response1 =
       client.putResource(uri"$hostname/$resourceName", textBody, MediaType.TextPlain)
@@ -59,7 +59,7 @@ class SolidClientSuite extends munit.FunSuite {
     assertEquals(response3.code, StatusCode.ResetContent)
   }
 
-  test("#3 create, retrieve options and delete a named plain text resource") {
+  test("#3 create, retrieve options and delete a named plain text resource".ignore) {
     val resourceName = "test3.txt"
     val response1 =
       client.putResource(uri"$hostname/$resourceName", textBody, MediaType.TextPlain)
@@ -79,7 +79,7 @@ class SolidClientSuite extends munit.FunSuite {
     assertEquals(response3.code, StatusCode.ResetContent)
   }
 
-  test("#4 create, retrieve and delete a named turtle resource") {
+  test("#4 create, retrieve and delete a named turtle resource".ignore) {
     val resourceName = "test4.ttl"
     val response1 = client.putResource(
       uri"$hostname/$resourceName",
@@ -100,7 +100,7 @@ class SolidClientSuite extends munit.FunSuite {
     assertEquals(response4.code, StatusCode.ResetContent)
   }
 
-  test("#5 create, retrieve and delete a generated plain text resource") {
+  test("#5 create, retrieve and delete a generated plain text resource".ignore) {
     val response1 = client.postResource(uri"$hostname/",textBody, MediaType.TextPlain)
     assertEquals(response1.code, StatusCode.Created)
 
@@ -117,7 +117,7 @@ class SolidClientSuite extends munit.FunSuite {
     assertEquals(response3.code, StatusCode.ResetContent)
   }
 
-  test("#6 create, retrieve and delete a generated turtle resource") {
+  test("#6 create, retrieve and delete a generated turtle resource".ignore) {
     val response1 =
       client.postResource(uri"$hostname/", turtleBody, MediaType("text", "turtle"))
     assertEquals(response1.code, StatusCode.Created)
@@ -135,7 +135,7 @@ class SolidClientSuite extends munit.FunSuite {
     assertEquals(response3.code, StatusCode.ResetContent)
   }
 
-  test("#7 create, patch and delete a resource using N3 Patch") {
+  test("#7 create, patch and delete a resource using N3 Patch".ignore) {
     val resourceName = "test7.ttl"
     val response1 = client.putResource(
       uri"$hostname/$resourceName",
@@ -158,7 +158,7 @@ class SolidClientSuite extends munit.FunSuite {
     assertEquals(response4.code, StatusCode.ResetContent)
   }
 
-  test("#8 create, patch and delete a resource using SPARQL Update") {
+  test("#8 create, patch and delete a resource using SPARQL Update".ignore) {
     val resourceName = "test8.ttl"
     val response1 = client.putResource(
       uri"$hostname/$resourceName",

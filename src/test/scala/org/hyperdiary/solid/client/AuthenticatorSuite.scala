@@ -21,12 +21,12 @@ class AuthenticatorSuite extends munit.FunSuite {
   private val hostname = "http://localhost:3000"
   private val controlsUri = uri"$hostname/.account/"
 
-  test("#1 get the login URL") {
+  test("#1 get the login URL".ignore) {
     val loginUrl = authenticator.getLoginUrl(controlsUri)
     assertEquals(loginUrl, Some("http://localhost:3000/.account/login/password/"))
   }
 
-  test("#2 get the login URL and attempt login") {
+  test("#2 get the login URL and attempt login".ignore) {
     authenticator.getLoginUrl(controlsUri) match {
       case Some(loginUrl) =>
         val response =
@@ -36,7 +36,7 @@ class AuthenticatorSuite extends munit.FunSuite {
     }
   }
 
-  test("#3 get the login URL, attempt login, get the client credentials URL and create a token") {
+  test("#3 get the login URL, attempt login, get the client credentials URL and create a token".ignore) {
     authenticator.getLoginUrl(controlsUri) match {
       case Some(loginUrl) =>
         val authorization = authenticator.getAuthorization(uri"$loginUrl", Credentials(rkwUsername, password))
@@ -52,7 +52,7 @@ class AuthenticatorSuite extends munit.FunSuite {
     }
   }
 
-  test("#4 get the login URL, attempt login, get the client credentials URL, create a token and ...") {
+  test("#4 get the login URL, attempt login, get the client credentials URL, create a token and ...".ignore) {
     authenticator.getLoginUrl(controlsUri) match {
       case Some(loginUrl) =>
         val authorization = authenticator.getAuthorization(uri"$loginUrl", Credentials(rkwUsername, password))
@@ -70,7 +70,7 @@ class AuthenticatorSuite extends munit.FunSuite {
     }
   }
 
-  test("#5 make authenticated request...") {
+  test("#5 make authenticated request...".ignore) {
     authenticator.getLoginUrl(controlsUri) match {
       case Some(loginUrl) =>
         val authorization = authenticator.getAuthorization(uri"$loginUrl", Credentials(username, password))

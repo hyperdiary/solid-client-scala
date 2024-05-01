@@ -1,3 +1,4 @@
+
 val scala3Version = "3.3.1"
 val sttpVersion = "3.9.5"
 val circeVersion = "0.14.7"
@@ -22,5 +23,16 @@ lazy val root = project
       "io.circe"                      %% "circe-parser"    % circeVersion,
       "org.bitbucket.b_c"              % "jose4j"          % "0.9.5",
       "org.scalameta"                 %% "munit"           % "0.7.29" % Test
-    )
+    ),
+    assembly / mainClass := Some("org.hyperdiary.solid.pod.PodLoaderApp"),
+    assembly / assemblyJarName := "solid-client-scala.jar",
+    assembly / assemblyMergeStrategy := {
+      case PathList("META-INF", "gedcomx.models") => MergeStrategy.discard
+      case PathList("META-INF","versions","9","module-info.class") => MergeStrategy.discard
+      case "module-info.class" => MergeStrategy.discard
+
+      case x =>
+        val oldStrategy = (assembly / assemblyMergeStrategy).value
+        oldStrategy(x)
+    }
   )

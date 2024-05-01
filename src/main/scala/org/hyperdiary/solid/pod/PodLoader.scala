@@ -5,7 +5,7 @@ import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.hyperdiary.solid.client.SolidClient
 import org.hyperdiary.solid.dpop.DpopManager
 import org.hyperdiary.solid.model.Label
-import sttp.client3.UriContext
+import sttp.client3.{Identity, Response, UriContext}
 import sttp.model.MediaType.ImageJpeg
 import sttp.model.{MediaType, Uri}
 

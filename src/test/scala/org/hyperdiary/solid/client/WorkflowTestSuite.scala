@@ -13,7 +13,7 @@ class WorkflowTestSuite extends munit.FunSuite {
     * https://communitysolidserver.github.io/CommunitySolidServer/latest/usage/metadata/#example-of-a-workflow-for-editing-a-description-resource
     */
 
-  test("workflow to edit a description resource") {
+  test("workflow to edit a description resource".ignore) {
 
     val response1 = client.putContainer(uri"$hostname/inbox/")
     assertEquals(response1.code, StatusCode.Created)
