@@ -1,46 +1,48 @@
 package org.hyperdiary.solid.pod
 
-import org.apache.jena.riot.{Lang, RDFDataMgr}
+import org.apache.jena.riot.{ Lang, RDFDataMgr }
+import org.hyperdiary.solid.client.SolidClient
+import org.hyperdiary.solid.dpop.DpopManager
 import sttp.client3.UriContext
 import sttp.model.Uri
 
-import java.io.{File, PrintWriter}
+import java.io.{ File, PrintWriter }
 import java.nio.file.Path
 
 class PodLoaderSuite extends munit.FunSuite {
 
-  private val rootPath = "/Users/devexe"; // "/home/rkw"
+  private val rootPath = "/home/rkw"; // "/Users/devexe"
   private val journalRdfRoot = s"$rootPath/Source/GitHub/hyperdiary/journal-rdf"
+  private val client = new SolidClient(DpopManager())
+  private val podUrl = "http://krw.localhost:3000"
+  private val baseUrl = "http://krw.hyperdiary.io"
+  private val loader = new PodLoader(client, podUrl, Some(baseUrl))
 
-  test("test".ignore) {
-    val loader = new PodLoader("http://krw.localhost:3000/")
-    loader.createContainers(List("label","person","place","residence","thing","photo"))
+  test("create collections".ignore) {
+    loader.createContainers(List("label", "person", "place", "residence", "thing", "photo"))
     for {
       resource <- loader.generateResource("label")
     } yield println(resource)
   }
 
   test("test2".ignore) {
-    val hostname = "http://krw.localhost:3000/"
     val collectionName = "label"
-    val loader = new PodLoader(hostname)
     val labelFilePath = getClass.getResource("/labels.csv").getPath
     val labels = loader.readLabelsCsv(labelFilePath: String)
-    val rdfLabels: List[(Uri,String)] = labels.flatMap { label =>
+    val rdfLabels: List[(Uri, String)] = labels.flatMap { label =>
       val res = loader.generateResource(collectionName)
-      res.flatMap(uri =>
+      res.flatMap { uri =>
         val id = uri.substring(uri.lastIndexOf('/') + 1)
-        Some((uri"$hostname$collectionName/$id", label.asRdfString(uri))))
+        Some((uri"$podUrl/$collectionName/$id", label.asRdfString(uri)))
+      }
     }
-    rdfLabels.foreach(rdfLabel => loader.insertAsSparqlUpdate(rdfLabel._1,rdfLabel._2))
+    rdfLabels.foreach(rdfLabel => loader.insertAsSparqlUpdate(rdfLabel._1, rdfLabel._2))
     assertEquals(rdfLabels.length, 7)
   }
 
   test("test3".ignore) {
-    val hostname = "http://krw.localhost:3000/"
     val fileRoot = s"$journalRdfRoot/turtle/krw"
-    val loader = new PodLoader(hostname)
-    for(i <- 1 to 17) {
+    for (i <- 1 to 17) {
       val entriesFilePath = File(s"$fileRoot/J1.E$i.ttl").getPath
       loader.loadTurtleHashFile(entriesFilePath, "entry", s"J1.E$i")
     }
@@ -56,12 +58,13 @@ class PodLoaderSuite extends munit.FunSuite {
     loader.loadTurtleFile(residencesFilePath)
     val thingsFilePath = File(s"$fileRoot/krw-things.ttl").getPath
     loader.loadTurtleFile(thingsFilePath)
-      val photosFilePath = File(s"$fileRoot/krw-photos.ttl").getPath
-      loader.loadTurtleFile(photosFilePath)
+    val photosFilePath = File(s"$fileRoot/krw-photos.ttl").getPath
+    loader.loadTurtleFile(photosFilePath)
   }
 
+  // Used to convert RDF/XML Journal entries to Turtle
   test("test4".ignore) {
-    for(i <- 1 to 17) {
+    for (i <- 1 to 17) {
       val entriesFilePath = s"/home/rkw/Source/GitHub/hyperdiary/journal-xml/target/J1.E$i.xml"
       val model = RDFDataMgr.loadModel(entriesFilePath)
       val out = new PrintWriter(new File(s"/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/krw/J1.E$i.ttl"))
@@ -73,12 +76,37 @@ class PodLoaderSuite extends munit.FunSuite {
   }
 
   test("test5".ignore) {
-    val hostname = "http://krw.localhost:3000/"
-    val loader = new PodLoader(hostname)
-    for(i <- 3 to 15) {
+    for (i <- 3 to 15) {
       val photoFilePath = Path.of(s"$journalRdfRoot/images/krw/$i.jpg")
       loader.loadPhoto(photoFilePath, "photo", s"$i.jpg")
     }
   }
 
+  test("test6".ignore) {
+    val waltonsPodUrl = "http://waltons.localhost:3000"
+    val waltonsBaseUrl = "http://waltons.example.org"
+    val podLoader = new PodLoader(client, waltonsPodUrl, Some(waltonsBaseUrl))
+    podLoader.createContainers(List("person"))
+  }
+
+  test("test7".ignore) {
+    val waltonsPodUrl = "http://waltons.localhost:3000"
+    val waltonsBaseUrl = "http://waltons.example.org"
+    val podLoader = new PodLoader(client, waltonsPodUrl, Some(waltonsBaseUrl))
+    podLoader.loadTurtleFile(s"$journalRdfRoot/turtle/waltons/Waltons.ttl")
+  }
+
+  test("test8".ignore) {
+    val entriesFilePath = s"/home/rkw/Source/GitHub/hyperdiary/journal-xml/examples/waltons-rdf-entry.xml"
+    val model = RDFDataMgr.loadModel(entriesFilePath)
+    val out = new PrintWriter(new File(s"/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/waltons/J1.E1.ttl"))
+    RDFDataMgr.write(out, model.listStatements().toModel, Lang.TTL)
+    out.close()
+    assertEquals(true, true)
+  }
+
+  test("load entries hash file".ignore) {
+    val entriesFilePath = File(s"/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/waltons/waltons-entry.ttl").getPath
+    loader.loadTurtleHashFile(entriesFilePath, "entry", "J1.E1")
+  }
 }

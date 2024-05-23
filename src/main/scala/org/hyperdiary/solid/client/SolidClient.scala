@@ -7,7 +7,7 @@ import sttp.model.{Header, MediaType, Uri}
 
 import java.nio.file.Path
 
-class SolidClient(dpopManager: DpopManager) {
+class SolidClient(dpopManager: DpopManager) extends Client {
 
   private val backend = OkHttpSyncBackend()
 
@@ -22,14 +22,14 @@ class SolidClient(dpopManager: DpopManager) {
     * @return
     *   the wrapped response
     */
-  def putResource(
+  override def putResource(
     resourceUri: Uri,
     bodyText: String,
     mediaType: MediaType
   ): Identity[Response[Either[String, String]]] =
     basicRequest.body(bodyText).contentType(mediaType.toString).put(resourceUri).send(backend)
 
-  def putResource(
+  override def putResource(
     resourceUri: Uri,
     filePath: Path,
     mediaType: MediaType): Identity[Response[Either[String, String]]] =
@@ -41,7 +41,7 @@ class SolidClient(dpopManager: DpopManager) {
     * @return
     *   the wrapped response
     */
-  def putContainer(
+  override def putContainer(
     containerUri: Uri
   ): Identity[Response[Either[String, String]]] =
     basicRequest
@@ -60,7 +60,7 @@ class SolidClient(dpopManager: DpopManager) {
     * @return
     *   the wrapped response
     */
-  def postResource(
+  override def postResource(
     baseUri: Uri,
     bodyText: String,
     mediaType: MediaType
@@ -78,7 +78,7 @@ class SolidClient(dpopManager: DpopManager) {
     * @return
     *   the wrapped response
     */
-  def deleteResource(
+  override def deleteResource(
     resourceUri: Uri
   ): Identity[Response[Either[String, String]]] =
     basicRequest.delete(resourceUri).send(backend)
@@ -92,7 +92,7 @@ class SolidClient(dpopManager: DpopManager) {
     * @return
     *   the wrapped response
     */
-  def getResource(
+  override def getResource(
     resourceUri: Uri,
     acceptType: String
   ): Identity[Response[Either[String, String]]] =
@@ -101,7 +101,7 @@ class SolidClient(dpopManager: DpopManager) {
       .header(Header.accept(acceptType))
       .send(backend)
 
-  def getResourceWithAuthorization(
+  override def getResourceWithAuthorization(
     resourceUri: Uri,
     acceptType: String,
     authToken: String,
@@ -122,7 +122,7 @@ class SolidClient(dpopManager: DpopManager) {
     * @return
     *   the wrapped response
     */
-  def getResourceHeaders(
+  override def getResourceHeaders(
     resourceUri: Uri,
     acceptType: String
   ): Identity[Response[Either[String, String]]] =
@@ -137,7 +137,7 @@ class SolidClient(dpopManager: DpopManager) {
     * @return
     *   the wrapped response
     */
-  def getContainerHeaders(containerUri: Uri): Identity[Response[Either[String, String]]] =
+  override def getContainerHeaders(containerUri: Uri): Identity[Response[Either[String, String]]] =
     basicRequest.head(containerUri).send(backend)
 
   /** Retrieves the communication options for the given URI using OPTIONS
@@ -147,7 +147,7 @@ class SolidClient(dpopManager: DpopManager) {
     * @return
     *   the wrapped response
     */
-  def getResourceOptions(
+  override def getResourceOptions(
     resourceUri: Uri
   ): Identity[Response[Either[String, String]]] =
     basicRequest.options(resourceUri).send(backend)
@@ -163,7 +163,7 @@ class SolidClient(dpopManager: DpopManager) {
     * @return
     *   the wrapped response
     */
-  def patchResource(
+  override def patchResource(
     resourceUri: Uri,
     bodyText: String,
     mediaType: MediaType
