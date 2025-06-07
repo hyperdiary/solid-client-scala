@@ -5,7 +5,7 @@ import org.apache.jena.riot.{ Lang, RDFDataMgr }
 import org.hyperdiary.solid.client.Client
 import org.hyperdiary.solid.model.Label
 import sttp.client3.UriContext
-import sttp.model.MediaType.ImageJpeg
+import sttp.model.MediaType.{ ApplicationXml, ImageJpeg }
 import sttp.model.{ MediaType, Uri }
 
 import java.io.StringWriter
@@ -80,6 +80,14 @@ class PodLoader(client: Client, podUrl: String, baseUrl: Option[String]) {
 
   def loadPhoto(photoPath: Path, collectionName: String, localName: String): Unit = {
     val response = client.putResource(uri"$podUrl/$collectionName/$localName", photoPath, ImageJpeg)
+    response.body match {
+      case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
+      case Right(body) => println(s"2xx response to GET:\n$body")
+    }
+  }
+
+  def loadXml(xmlPath: Path, collectionName: String, localName: String): Unit = {
+    val response = client.putResource(uri"$podUrl/$collectionName/$localName", xmlPath, ApplicationXml)
     response.body match {
       case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
       case Right(body) => println(s"2xx response to GET:\n$body")

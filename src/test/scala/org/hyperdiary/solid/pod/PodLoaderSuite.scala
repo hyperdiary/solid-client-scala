@@ -11,14 +11,14 @@ import java.nio.file.Path
 
 class PodLoaderSuite extends munit.FunSuite {
 
-  private val rootPath = "/home/rkw"; // "/Users/devexe"
+  private val rootPath = "/Users/devexe"
   private val journalRdfRoot = s"$rootPath/Source/GitHub/hyperdiary/journal-rdf"
   private val client = new SolidClient(DpopManager())
   private val podUrl = "http://krw.localhost:3000"
   private val baseUrl = "http://krw.hyperdiary.io"
   private val loader = new PodLoader(client, podUrl, Some(baseUrl))
 
-  test("create collections".ignore) {
+  test("create collections") {
     loader.createContainers(List("label", "person", "place", "residence", "thing", "photo"))
     for {
       resource <- loader.generateResource("label")
@@ -40,7 +40,7 @@ class PodLoaderSuite extends munit.FunSuite {
     assertEquals(rdfLabels.length, 7)
   }
 
-  test("test3".ignore) {
+  test("test3") {
     val fileRoot = s"$journalRdfRoot/turtle/krw"
     for (i <- 1 to 17) {
       val entriesFilePath = File(s"$fileRoot/J1.E$i.ttl").getPath
@@ -109,4 +109,10 @@ class PodLoaderSuite extends munit.FunSuite {
     val entriesFilePath = File(s"/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/waltons/waltons-entry.ttl").getPath
     loader.loadTurtleHashFile(entriesFilePath, "entry", "J1.E1")
   }
+
+  test("load xml".ignore) {
+    val xmlFilePath = Path.of(s"/Users/devexe/Source/GitHub/rwalpole/journal/2020s/2025/06/02.xml")
+    loader.loadXml(xmlFilePath, "entry-xml", "02.xml")
+  }
+
 }
