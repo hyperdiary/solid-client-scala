@@ -6,7 +6,7 @@ import org.hyperdiary.solid.dpop.DpopManager
 import sttp.client3.UriContext
 import sttp.model.Uri
 
-import java.io.{ File, PrintWriter }
+import java.io.{ File, FileOutputStream }
 import java.nio.file.Path
 
 class PodLoaderSuite extends munit.FunSuite {
@@ -67,7 +67,7 @@ class PodLoaderSuite extends munit.FunSuite {
     for (i <- 1 to 17) {
       val entriesFilePath = s"/home/rkw/Source/GitHub/hyperdiary/journal-xml/target/J1.E$i.xml"
       val model = RDFDataMgr.loadModel(entriesFilePath)
-      val out = new PrintWriter(new File(s"/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/krw/J1.E$i.ttl"))
+      val out = new FileOutputStream(new File(s"/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/krw/J1.E$i.ttl"))
       RDFDataMgr.write(out, model.listStatements().toModel, Lang.TTL)
       out.close()
       assertEquals(true, true)
@@ -99,7 +99,7 @@ class PodLoaderSuite extends munit.FunSuite {
   test("test8".ignore) {
     val entriesFilePath = s"/home/rkw/Source/GitHub/hyperdiary/journal-xml/examples/waltons-rdf-entry.xml"
     val model = RDFDataMgr.loadModel(entriesFilePath)
-    val out = new PrintWriter(new File(s"/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/waltons/J1.E1.ttl"))
+    val out = new FileOutputStream(new File(s"/home/rkw/Source/GitHub/hyperdiary/journal-rdf/turtle/waltons/J1.E1.ttl"))
     RDFDataMgr.write(out, model.listStatements().toModel, Lang.TTL)
     out.close()
     assertEquals(true, true)

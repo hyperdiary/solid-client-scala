@@ -1,7 +1,7 @@
-
+val circeVersion = "0.14.15"
+val jenaVersion = "6.0.0"
 val scala3Version = "3.3.1"
-val sttpVersion = "3.9.5"
-val circeVersion = "0.14.7"
+val sttpVersion = "3.11.0"
 
 lazy val root = project
   .in(file("."))
@@ -14,15 +14,15 @@ lazy val root = project
       "com.softwaremill.sttp.client3" %% "core"            % sttpVersion,
       "com.softwaremill.sttp.client3" %% "okhttp-backend"  % sttpVersion,
       "com.softwaremill.sttp.client3" %% "circe"           % sttpVersion,
-      "org.apache.jena"                % "jena-core"       % "4.10.0",
-      "org.apache.jena"                % "jena-arq"        % "4.10.0",
-      "com.github.pureconfig"         %% "pureconfig-core" % "0.17.6",
-      "com.monovore"                  %% "decline"         % "2.4.1",
+      "org.apache.jena"                % "jena-core"       % jenaVersion,
+      "org.apache.jena"                % "jena-arq"        % jenaVersion,
+      "com.github.pureconfig"         %% "pureconfig-core" % "0.17.10",
+      "com.monovore"                  %% "decline"         % "2.6.2",
       "io.circe"                      %% "circe-core"      % circeVersion,
       "io.circe"                      %% "circe-generic"   % circeVersion,
       "io.circe"                      %% "circe-parser"    % circeVersion,
-      "org.bitbucket.b_c"              % "jose4j"          % "0.9.5",
-      "org.scalameta"                 %% "munit"           % "0.7.29" % Test
+      "org.bitbucket.b_c"              % "jose4j"          % "0.9.6",
+      "org.scalameta"                 %% "munit"           % "1.3.0" % Test
     ),
     assembly / mainClass := Some("org.hyperdiary.solid.pod.PodLoaderApp"),
     assembly / assemblyJarName := "solid-client-scala.jar",

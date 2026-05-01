@@ -1,18 +1,18 @@
 package org.hyperdiary.solid.pod
 
-import org.apache.jena.rdf.model.{ Model, Resource }
-import org.apache.jena.riot.{ Lang, RDFDataMgr }
+import org.apache.jena.rdf.model.{Model, Resource}
+import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.hyperdiary.solid.client.Client
 import org.hyperdiary.solid.model.Label
-import sttp.client3.UriContext
-import sttp.model.MediaType.{ ApplicationXml, ImageJpeg }
-import sttp.model.{ MediaType, Uri }
+import sttp.client3.{Response, UriContext}
+import sttp.model.MediaType.{ApplicationXml, ImageJpeg}
+import sttp.model.{MediaType, Uri}
 
 import java.io.StringWriter
 import java.nio.file.Path
 import scala.io.Source
 import scala.jdk.CollectionConverters.*
-import scala.util.{ Failure, Success, Try, Using }
+import scala.util.{Failure, Success, Try, Using}
 
 class PodLoader(client: Client, podUrl: String, baseUrl: Option[String]) {
 
@@ -49,10 +49,11 @@ class PodLoader(client: Client, podUrl: String, baseUrl: Option[String]) {
   def insertAsSparqlUpdate(resourceUri: Uri, resourceBody: String): Unit = {
     val sparqlInsert = s"INSERT DATA { $resourceBody }"
     val response = client.patchResource(resourceUri, sparqlInsert, MediaType("application", "sparql-update"))
-    response.body match {
-      case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
-      case Right(body) => println(s"2xx response to GET:\n$body")
-    }
+    handleResponse(response)
+//    response.body match {
+//      case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
+//      case Right(body) => println(s"2xx response to GET:\n$body")
+//    }
   }
 
   def loadTurtleFile(turtlePath: String): Unit = {
@@ -72,26 +73,29 @@ class PodLoader(client: Client, podUrl: String, baseUrl: Option[String]) {
     val model = RDFDataMgr.loadModel(turtlePath)
     val response =
       client.putResource(uri"$podUrl/$collectionName/$localName", modelAsString(model), MediaType("text", "turtle"))
-    response.body match {
-      case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
-      case Right(body) => println(s"2xx response to GET:\n$body")
-    }
+    handleResponse(response)
+//    response.body match {
+//      case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
+//      case Right(body) => println(s"2xx response to GET:\n$body")
+//    }
   }
 
   def loadPhoto(photoPath: Path, collectionName: String, localName: String): Unit = {
     val response = client.putResource(uri"$podUrl/$collectionName/$localName", photoPath, ImageJpeg)
-    response.body match {
-      case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
-      case Right(body) => println(s"2xx response to GET:\n$body")
-    }
+    handleResponse(response)
+//    response.body match {
+//      case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
+//      case Right(body) => println(s"2xx response to GET:\n$body")
+//    }
   }
 
   def loadXml(xmlPath: Path, collectionName: String, localName: String): Unit = {
     val response = client.putResource(uri"$podUrl/$collectionName/$localName", xmlPath, ApplicationXml)
-    response.body match {
-      case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
-      case Right(body) => println(s"2xx response to GET:\n$body")
-    }
+    handleResponse(response)
+//    response.body match {
+//      case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
+//      case Right(body) => println(s"2xx response to GET:\n$body")
+//    }
   }
 
   private def load(resource: Resource): Unit = {
@@ -109,10 +113,11 @@ class PodLoader(client: Client, podUrl: String, baseUrl: Option[String]) {
     } else {
       client.putResource(uri"$podUrl/$collection/$localName", modelAsString(resourceModel), MediaType("text", "turtle"))
     }
-    response.body match {
-      case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
-      case Right(body) => println(s"2xx response to GET:\n$body")
-    }
+    handleResponse(response)
+//    response.body match {
+//      case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
+//      case Right(body) => println(s"2xx response to GET:\n$body")
+//    }
   }
 
   private def modelAsString(model: Model) = {
@@ -132,12 +137,16 @@ class PodLoader(client: Client, podUrl: String, baseUrl: Option[String]) {
 
   private def createContainer(containerName: String): Unit = {
     val response = client.putContainer(uri"$podUrl/$containerName/")
-    response.body match {
-      case Left(body)  => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
-      case Right(body) => println(s"2xx response to GET:\n$body")
-    }
+    handleResponse(response)
   }
 
   private def getBaseUrl: String = s"${baseUrl.getOrElse(podUrl)}/"
+
+  private def handleResponse(response: Response[Either[String,String]]): Unit = {
+    response.body match {
+      case Left(body) => println(s"Non-2xx response to GET with code ${response.code}:\n$body")
+      case Right(body) => println(s"2xx response to GET:\n$body")
+    }
+  }
 
 }
