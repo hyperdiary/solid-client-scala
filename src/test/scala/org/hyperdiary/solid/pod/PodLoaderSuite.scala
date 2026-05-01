@@ -40,7 +40,7 @@ class PodLoaderSuite extends munit.FunSuite {
     assertEquals(rdfLabels.length, 7)
   }
 
-  test("test3") {
+  test("Load all RDF for Pod".ignore) {
     val fileRoot = s"$journalRdfRoot/turtle/krw"
     for (i <- 1 to 17) {
       val entriesFilePath = File(s"$fileRoot/J1.E$i.ttl").getPath
