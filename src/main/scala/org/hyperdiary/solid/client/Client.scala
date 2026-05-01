@@ -1,32 +1,22 @@
-package org.hyperdiary
+package org.hyperdiary.solid.client
 
-import sttp.client3.*
-import sttp.client3.okhttp.OkHttpSyncBackend
-import sttp.model.{ Header, MediaType, Uri }
+import sttp.client3.{ Identity, Response }
+import sttp.model.{ MediaType, Uri }
 
-class SolidClient {
+import java.nio.file.Path
 
-  private val backend = OkHttpSyncBackend()
+trait Client {
 
-  /** Creates a resource for a given URI using PUT
-    *
-    * @param resourceUri
-    *   \- the URI of the resource
-    * @param bodyText
-    *   \- the request body text
-    * @param mediaType
-    *   \- the request media type
-    * @return
-    *   the wrapped response
-    */
   def putResource(
     resourceUri: Uri,
     bodyText: String,
     mediaType: MediaType
-  ): Identity[Response[Either[String, String]]] =
-    basicRequest.body(bodyText).contentType(mediaType.toString).put(resourceUri).send(backend)
+  ): Identity[Response[Either[String, String]]]
+
+  def putResource(resourceUri: Uri, filePath: Path, mediaType: MediaType): Identity[Response[Either[String, String]]]
 
   /** Creates a Linked Data Platform Container using PUT
+    *
     * @param containerUri
     *   \- the URI of the container
     * @return
@@ -34,11 +24,7 @@ class SolidClient {
     */
   def putContainer(
     containerUri: Uri
-  ): Identity[Response[Either[String, String]]] =
-    basicRequest
-      .put(containerUri)
-      .headers(Header("Link", "<http://www.w3.org/ns/ldp#Container>; rel=\"type\""))
-      .send(backend)
+  ): Identity[Response[Either[String, String]]]
 
   /** Creates a resource with a generated URI using POST
     *
@@ -55,12 +41,7 @@ class SolidClient {
     baseUri: Uri,
     bodyText: String,
     mediaType: MediaType
-  ): Identity[Response[Either[String, String]]] =
-    basicRequest
-      .body(bodyText)
-      .contentType(mediaType)
-      .post(baseUri)
-      .send(backend)
+  ): Identity[Response[Either[String, String]]]
 
   /** Deletes the given resource URI using DELETE
     *
@@ -71,8 +52,7 @@ class SolidClient {
     */
   def deleteResource(
     resourceUri: Uri
-  ): Identity[Response[Either[String, String]]] =
-    basicRequest.delete(resourceUri).send(backend)
+  ): Identity[Response[Either[String, String]]]
 
   /** Retrieves the given resource URI using GET
     *
@@ -86,11 +66,13 @@ class SolidClient {
   def getResource(
     resourceUri: Uri,
     acceptType: String
-  ): Identity[Response[Either[String, String]]] =
-    basicRequest
-      .get(resourceUri)
-      .header(Header.accept(acceptType))
-      .send(backend)
+  ): Identity[Response[Either[String, String]]]
+
+  def getResourceWithAuthorization(
+    resourceUri: Uri,
+    acceptType: String,
+    authToken: String
+  ): Identity[Response[Either[String, String]]]
 
   /** Retrieves the headers for the given resource URI using HEAD
     *
@@ -104,20 +86,16 @@ class SolidClient {
   def getResourceHeaders(
     resourceUri: Uri,
     acceptType: String
-  ): Identity[Response[Either[String, String]]] =
-    basicRequest
-      .head(resourceUri)
-      .header(Header.accept(acceptType))
-      .send(backend)
+  ): Identity[Response[Either[String, String]]]
 
   /** Retrieves the headers for the given container URI using HEAD
+    *
     * @param containerUri
     *   \- the container URI
     * @return
     *   the wrapped response
     */
-  def getContainerHeaders(containerUri: Uri): Identity[Response[Either[String, String]]] =
-    basicRequest.head(containerUri).send(backend)
+  def getContainerHeaders(containerUri: Uri): Identity[Response[Either[String, String]]]
 
   /** Retrieves the communication options for the given URI using OPTIONS
     *
@@ -128,8 +106,7 @@ class SolidClient {
     */
   def getResourceOptions(
     resourceUri: Uri
-  ): Identity[Response[Either[String, String]]] =
-    basicRequest.options(resourceUri).send(backend)
+  ): Identity[Response[Either[String, String]]]
 
   /** Modifies the given resource URI using PATCH
     *
@@ -146,11 +123,6 @@ class SolidClient {
     resourceUri: Uri,
     bodyText: String,
     mediaType: MediaType
-  ): Identity[Response[Either[String, String]]] =
-    basicRequest
-      .patch(resourceUri)
-      .body(bodyText)
-      .contentType(mediaType.toString)
-      .send(backend)
+  ): Identity[Response[Either[String, String]]]
 
 }

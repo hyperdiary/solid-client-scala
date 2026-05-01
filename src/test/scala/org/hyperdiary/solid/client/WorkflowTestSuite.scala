@@ -1,18 +1,19 @@
-package org.hyperdiary
+package org.hyperdiary.solid.client
 
+import org.hyperdiary.solid.dpop.DpopManager
 import sttp.client3.UriContext
-import sttp.model.{ MediaType, StatusCode }
+import sttp.model.{MediaType, StatusCode}
 
 class WorkflowTestSuite extends munit.FunSuite {
 
   private val hostname = "http://localhost:3000"
-  private val client = new SolidClient()
+  private val client = new SolidClient(DpopManager())
 
   /** This test runs a workflow to edit a description resource. Based on
     * https://communitysolidserver.github.io/CommunitySolidServer/latest/usage/metadata/#example-of-a-workflow-for-editing-a-description-resource
     */
 
-  test("workflow to edit a description resource") {
+  test("workflow to edit a description resource".ignore) {
 
     val response1 = client.putContainer(uri"$hostname/inbox/")
     assertEquals(response1.code, StatusCode.Created)

@@ -1,0 +1,94 @@
+package org.hyperdiary.solid.client
+
+import sttp.client3.UriContext
+import sttp.model.{MediaType, StatusCode, Uri}
+import io.circe.*
+import io.circe.parser.*
+import org.hyperdiary.solid.dpop.DpopManager
+import org.hyperdiary.solid.model.{Credentials, WebId}
+
+class AuthenticatorSuite extends munit.FunSuite {
+
+  // DO NOT CHECK VALUES INTO GIT!!!
+  private val username = "rob.walpole@devexe.co.uk"
+  private val rkwUsername = "robkwalpole@gmail.com"
+  private val password = "spamAL0t"
+
+  private val dpopManager = DpopManager()
+
+  private val authenticator = new Authenticator(dpopManager)
+
+  private val hostname = "http://localhost:3000"
+  private val controlsUri = uri"$hostname/.account/"
+
+  test("#1 get the login URL".ignore) {
+    val loginUrl = authenticator.getLoginUrl(controlsUri)
+    assertEquals(loginUrl, Some("http://localhost:3000/.account/login/password/"))
+  }
+
+  test("#2 get the login URL and attempt login".ignore) {
+    authenticator.getLoginUrl(controlsUri) match {
+      case Some(loginUrl) =>
+        val response =
+          authenticator.getAuthorization(uri"$loginUrl", Credentials(rkwUsername, password))
+        assert(response.nonEmpty)
+      case None => fail("No login URL received")
+    }
+  }
+
+  test("#3 get the login URL, attempt login, get the client credentials URL and create a token".ignore) {
+    authenticator.getLoginUrl(controlsUri) match {
+      case Some(loginUrl) =>
+        val authorization = authenticator.getAuthorization(uri"$loginUrl", Credentials(rkwUsername, password))
+        val clientCredentialsUrl =
+          authenticator.getClientCredentialsUrl(controlsUri, authorization.getOrElse("")).getOrElse("")
+        val token = authenticator.generateToken(
+          uri"$clientCredentialsUrl",
+          authorization.get,
+          WebId("my-token", "http://rkw.localhost:3000/profile/card#me")
+        )
+        assertEquals(token.nonEmpty, true)
+      case None => fail("No login URL received")
+    }
+  }
+
+  test("#4 get the login URL, attempt login, get the client credentials URL, create a token and ...".ignore) {
+    authenticator.getLoginUrl(controlsUri) match {
+      case Some(loginUrl) =>
+        val authorization = authenticator.getAuthorization(uri"$loginUrl", Credentials(rkwUsername, password))
+        val clientCredentialsUrl =
+          authenticator.getClientCredentialsUrl(controlsUri, authorization.getOrElse("")).getOrElse("")
+        val token = authenticator.generateToken(
+          uri"$clientCredentialsUrl",
+          authorization.get,
+          WebId("my-token", "http://rkw.localhost:3000/profile/card#me")
+        )
+        val tokenUrl = "http://localhost:3000/.oidc/token"
+        val accessToken = authenticator.generateAccessToken(uri"$tokenUrl", token.get)
+        assertEquals(accessToken.nonEmpty, true)
+      case None => fail("No login URL received")
+    }
+  }
+
+  test("#5 make authenticated request...".ignore) {
+    authenticator.getLoginUrl(controlsUri) match {
+      case Some(loginUrl) =>
+        val authorization = authenticator.getAuthorization(uri"$loginUrl", Credentials(username, password))
+        val clientCredentialsUrl =
+          authenticator.getClientCredentialsUrl(controlsUri, authorization.getOrElse("")).getOrElse("")
+        val token = authenticator.generateToken(
+          uri"$clientCredentialsUrl",
+          authorization.get,
+          WebId("my-token", "http://krw.localhost:3000/profile/card#me")
+        )
+        val tokenUrl = "http://localhost:3000/.oidc/token"
+        val accessToken = authenticator.generateAccessToken(uri"$tokenUrl", token.get)
+        val client = SolidClient(dpopManager)
+        val response = client.getResourceWithAuthorization(uri"http://krw.localhost:3000/label/","application/json",accessToken.get.accessToken)
+        assertEquals(response.code,StatusCode.Ok)
+        //assertEquals(accessToken.nonEmpty, true)
+      case None => fail("No login URL received")
+    }
+  }
+
+}
